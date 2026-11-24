@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AquaAI · modern water intelligence</title>
+  <!-- Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f0f4fa;
+      font-family: 'Inter', sans-serif;
+      color: #0a1e2f;
+      display: flex;
+    }
+
+    /* ----- SIDEBAR (glass, dark) ----- */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 260px;
+      height: 100vh;
+      background: linear-gradient(145deg, #0b2a3b, #0a1e2f);
+      backdrop-filter: blur(2px);
+      padding: 32px 20px;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      box-shadow: 4px 0 30px rgba(0,20,30,0.25);
+      border-right: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 48px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(0, 230, 180, 0.18);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: #6ef0d0;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+    }
+
+    .brand h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: white;
+    }
+
+    .brand span {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      opacity: 0.6;
+      letter-spacing: 0.3px;
+      margin-top: 4px;
+      color: #b6d0e0;
+    }
+
+    .menu-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: rgba(255,255,255,0.3);
+      margin: 16px 12px 14px;
+      font-weight: 600;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      transition: 0.25s;
+      background: transparent;
+    }
+
+    .nav i {
+      width: 20px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .nav:hover {
+      background: rgba(255,255,255,0.07);
+      color: white;
+    }
+
+    .nav.active {
+      background: rgba(0, 230, 180, 0.12);
+      color: #a6f0dc;
+      box-shadow: inset 3px 0 0 #4cd9c0;
+    }
+
+    .nav.active i {
+      color: #6ef0d0;
+    }
+
+    /* ----- MAIN ----- */
+    .main {
+      margin-left: 260px;
+      flex: 1;
+      padding: 28px 38px 30px;
+      max-width: calc(100% - 260px);
+    }
+
+    /* top bar */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .heading h1 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #0b2a3b, #1c5b6e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .heading p {
+      color: #506c80;
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 6px;
+      letter-spacing: -0.2px;
+    }
+
+    .system-status {
+      background: #e8ecf2;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #38556a;
+      letter-spacing: 0.3px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .system-status.running {
+      background: #d5f3e6;
+      color: #0c7a5a;
+    }
+
+    /* control panel glass */
+    .control-panel {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 18px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 12px 30px -10px rgba(0,40,60,0.08);
+    }
+
+    .control-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: #0a2536;
+    }
+
+    .control-subtitle {
+      color: #5f7d92;
+      font-size: 13px;
+      margin-top: 4px;
+      font-weight: 450;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+    }
+
+    button i {
+      font-size: 14px;
+    }
+
+    button:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.12); }
+    button:active { transform: scale(0.96); }
+
+    .start { background: #0fb37e; color: white; }
+    .start:hover { background: #0c9e6d; }
+    .stop { background: #e5544a; color: white; }
+    .stop:hover { background: #d13d32; }
+    .clear { background: #2f4052; color: white; }
+    .clear:hover { background: #1f3243; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+    /* section title */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #0a2536;
+      letter-spacing: -0.3px;
+    }
+
+    /* sensor grid */
+    .sensor-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .sensor-card {
+      background: white;
+      backdrop-filter: blur(4px);
+      border-radius: 24px;
+      padding: 24px 22px;
+      box-shadow: 0 8px 26px -8px rgba(0,40,60,0.08);
+      border: 1px solid rgba(255,255,255,0.6);
+      transition: 0.2s;
+    }
+
+    .sensor-card:hover { transform: translateY(-4px); box-shadow: 0 16px 34px -10px rgba(0,60,80,0.12); }
+
+    .sensor-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #5f7d92;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sensor-label i { color: #3b8ba3; font-size: 15px; }
+
+    .sensor-value {
+      font-size: 34px;
+      font-weight: 800;
+      margin-top: 12px;
+      letter-spacing: -0.5px;
+      color: #0a2536;
+    }
+
+    .sensor-unit {
+      color: #8aa3b6;
+      font-size: 13px;
+      font-weight: 500;
+      margin-left: 4px;
+    }
+
+    .last-update {
+      font-size: 11px;
+      color: #8fa8bb;
+      margin-top: 12px;
+      font-weight: 500;
+      border-top: 1px solid #edf2f8;
+      padding-top: 12px;
+    }
+
+    /* card */
+    .card {
+      background: white;
+      border-radius: 28px;
+      padding: 28px 30px;
+      box-shadow: 0 8px 28px -6px rgba(0,40,60,0.06);
+      margin-bottom: 28px;
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .card-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      color: #0a2536;
+    }
+
+    .card-header h2 i { margin-right: 10px; color: #2f89a3; }
+
+    /* prediction area */
+    .prediction-area {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f6faff;
+      border-radius: 24px;
+      padding: 28px 32px;
+      border: 1px solid #e6eef7;
+    }
+
+    .prediction-caption {
+      color: #5f7d92;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .prediction {
+      font-size: 40px;
+      font-weight: 800;
+      margin-top: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .good { color: #0fb37e; }
+    .bad { color: #e5544a; }
+
+    .confidence {
+      text-align: right;
+    }
+
+    .confidence-number {
+      font-size: 34px;
+      font-weight: 800;
+      color: #0a2536;
+      letter-spacing: -0.3px;
+    }
+
+    /* risk */
+    .risk-section {
+      margin-top: 28px;
+    }
+
+    .risk-heading {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 500;
+      color: #38556a;
+      margin-bottom: 10px;
+    }
+    .risk-heading strong { font-weight: 700; color: #0a2536; font-size: 16px; }
+
+    .risk-track {
+      width: 100%;
+      height: 10px;
+      background: #e2e9f2;
+      border-radius: 40px;
+      overflow: hidden;
+    }
+
+    .risk-progress {
+      height: 100%;
+      border-radius: 40px;
+      background: linear-gradient(90deg, #0fb37e, #f5b342, #e5544a);
+      transition: width 0.5s ease;
+    }
+
+    .risk-level {
+      margin-top: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.2px;
+    }
+
+    /* explainable AI */
+    .explain-box {
+      background: #f8fcff;
+      border-radius: 22px;
+      padding: 24px 26px;
+      border: 1px solid #e2edf8;
+    }
+
+    .explain-intro {
+      color: #3f5f74;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 22px;
+      font-weight: 450;
+    }
+
+    .explain-features {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 14px;
+    }
+
+    .explain-feature {
+      background: white;
+      border-radius: 18px;
+      padding: 18px 16px;
+      border: 1px solid #e4eef8;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .feature-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: #0a2536;
+    }
+
+    .feature-status {
+      margin-top: 8px;
+      color: #4d728b;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .shap-note {
+      margin-top: 20px;
+      padding: 14px 18px;
+      background: #e3f0fa;
+      border-radius: 16px;
+      color: #165779;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .shap-note strong { color: #0c405a; }
+
+    /* ----- POSSIBLE SOLUTION ----- */
+    .solution-card {
+      margin-top: 0;
+    }
+
+    .solution-intro {
+      color: #3f5f74;
+      font-size: 14px;
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+
+    .solution-summary {
+      background: #f6faff;
+      border: 1px solid #e2edf8;
+      border-left: 5px solid #2f89a3;
+      border-radius: 16px;
+      padding: 18px 20px;
+      color: #244b63;
+      font-size: 14px;
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+
+    .solution-summary.bad-summary {
+      border-left-color: #e5544a;
+      background: #fff8f7;
+    }
+
+    .solution-summary.good-summary {
+      border-left-color: #0fb37e;
+      background: #f4fcf8;
+    }
+
+    .solution-priority {
+      display: none;
+      background: #fff8e8;
+      border: 1px solid #f3dfb0;
+      border-left: 5px solid #e2a72e;
+      border-radius: 16px;
+      padding: 16px 20px;
+      color: #765719;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .solution-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .solution-item {
+      background: #ffffff;
+      border: 1px solid #e1ebf4;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 3px 12px rgba(0,40,60,0.035);
+    }
+
+    .solution-item.high {
+      border-left: 5px solid #e5544a;
+    }
+
+    .solution-item.attention {
+      border-left: 5px solid #e2a72e;
+    }
+
+    .solution-item.normal {
+      border-left: 5px solid #0fb37e;
+    }
+
+    .solution-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .solution-parameter {
+      color: #0a2536;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .solution-status {
+      padding: 5px 10px;
+      border-radius: 30px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+
+    .solution-status.high {
+      background: #fce8e6;
+      color: #b33d33;
+    }
+
+    .solution-status.attention {
+      background: #fff1d7;
+      color: #946000;
+    }
+
+    .solution-status.normal {
+      background: #daf5ea;
+      color: #0b7a58;
+    }
+
+    .solution-label {
+      color: #7891a4;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-top: 9px;
+      margin-bottom: 4px;
+    }
+
+    .solution-text {
+      color: #35566d;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .solution-disclaimer {
+      margin-top: 18px;
+      padding: 14px 18px;
+      background: #eef6fb;
+      border-radius: 14px;
+      color: #45677d;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .solution-empty {
+      text-align: center;
+      color: #7f99ae;
+      padding: 20px;
+      font-size: 13px;
+    }
+
+    /* table */
+    .records-card { margin-top: 0; }
+
+    .record-count {
+      background: #e3edf8;
+      color: #1c5f79;
+      padding: 6px 16px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .table-wrapper { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      padding: 14px 12px;
+      color: #3d6279;
+      background: #f2f8fe;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    td {
+      padding: 16px 12px;
+      border-bottom: 1px solid #edf4fc;
+      white-space: nowrap;
+      color: #0a2536;
+      font-weight: 500;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .result-badge {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .result-good { background: #daf5ea; color: #0b7a58; }
+    .result-bad { background: #fce8e6; color: #b33d33; }
+
+    .risk-badge { font-weight: 700; }
+
+    .empty { text-align: center; color: #87a2b8; padding: 38px; font-style: italic; }
+
+    /* about */
+    .about-card {
+      background: linear-gradient(135deg, #0a2536, #154a5e);
+      border-radius: 28px;
+      padding: 34px 34px;
+      color: white;
+      margin-bottom: 28px;
+      box-shadow: 0 16px 40px -8px rgba(0,30,50,0.25);
+    }
+
+    .about-card h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: -0.3px;
+    }
+
+    .about-card p {
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .about-item {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 18px 18px;
+      backdrop-filter: blur(2px);
+    }
+
+    .about-item strong {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .about-item span {
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .error-box {
+      display: none;
+      background: #fde8e6;
+      color: #b53b30;
+      border: 1px solid #fbcbc4;
+      border-radius: 18px;
+      padding: 14px 22px;
+      margin-bottom: 22px;
+      font-weight: 500;
+    }
+
+    .footer {
+      text-align: center;
+      color: #7f99ae;
+      font-size: 12px;
+      padding: 12px;
+      font-weight: 500;
+    }
+
+    /* responsive */
+    @media (max-width: 1100px) {
+      .sensor-grid { grid-template-columns: repeat(2,1fr); }
+      .explain-features { grid-template-columns: repeat(2,1fr); }
+      .about-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 820px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; max-width: 100%; padding: 24px 18px; }
+      .sensor-grid { grid-template-columns: 1fr; }
+      .explain-features { grid-template-columns: 1fr; }
+      .solution-list { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .topbar, .control-panel { flex-direction: column; align-items: flex-start; }
+      .button-group { width: 100%; justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-icon"><i class="fas fa-droplet"></i></div>
+    <div><h2>AquaAI</h2><span>smart water intelligence</span></div>
+  </div>
+  <div class="menu-title">Main</div>
+  <a href="/" class="nav active"><i class="fas fa-chart-pie"></i> Dashboard</a>
+  <a href="/database" class="nav"><i class="fas fa-database"></i> Database</a>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="heading">
+      <h1><i class="fas fa-water" style="color:#1f7d9a; margin-right:8px;"></i>Smart Water Quality</h1>
+      <p>AI · IoT · real-time prediction & risk</p>
+    </div>
+    <div id="systemStatus" class="system-status"><i class="fas fa-circle" style="font-size:10px; margin-right:8px;"></i> SYSTEM STOPPED</div>
+  </div>
+
+  <div id="errorBox" class="error-box"></div>
+
+  <!-- control -->
+  <div class="control-panel">
+    <div>
+      <div class="control-title"><i class="fas fa-microchip" style="margin-right:8px; color:#2f89a3;"></i>Real‑time sensor monitoring</div>
+      <div class="control-subtitle">updates every 3 seconds from API</div>
+    </div>
+    <div class="button-group">
+      <button id="startButton" class="start" onclick="startMonitoring()"><i class="fas fa-play"></i> START</button>
+      <button id="stopButton" class="stop" onclick="stopMonitoring()" disabled><i class="fas fa-stop"></i> STOP</button>
+      <button class="clear" onclick="clearDatabase()"><i class="fas fa-trash-alt"></i> CLEAR</button>
+    </div>
+  </div>
+
+  <!-- sensors -->
+  <div class="section-title"><i class="fas fa-chart-line" style="margin-right:10px; color:#2f89a3;"></i>Current values</div>
+  <div class="sensor-grid">
+    <div class="sensor-card">
+      <div class="sensor-label"><i class="fas fa-flask"></i> pH Level</div>
+      <div id="ph" class="sensor-value">--</div>
+      <span class="sensor-unit">pH</span>
+      <div id="phTime" class="last-update">waiting</div>
+    </div>
+    <div class="sensor-card">
+      <div class="sensor-label"><i class="fas fa-water"></i> Turbidity</div>
+      <div id="turbidity" class="sensor-value">--</div>
+      <span class="sensor-unit">NTU</span>
+      <div id="turbidityTime" class="last-update">waiting</div>
+    </div>
+    <div class="sensor-card">
+      <div class="sensor-label"><i class="fas fa-bolt"></i> TDS</div>
+      <div id="tds" class="sensor-value">--</div>
+      <span class="sensor-unit">ppm</span>
+      <div id="tdsTime" class="last-update">waiting</div>
+    </div>
+    <div class="sensor-card">
+      <div class="sensor-label"><i class="fas fa-thermometer-half"></i> Temperature</div>
+      <div id="temperature" class="sensor-value">--</div>
+      <span class="sensor-unit">°C</span>
+      <div id="temperatureTime" class="last-update">waiting</div>
+    </div>
+  </div>
+
+  <!-- prediction -->
+  <div class="card">
+    <div class="card-header">
+      <h2><i class="fas fa-brain"></i> AI Prediction</h2>
+      <span style="color:#7b99b0; font-size:12px; font-weight:600; background:#eef6fd; padding:4px 14px; border-radius:30px;">federated CNN</span>
+    </div>
+    <div class="prediction-area">
+      <div>
+        <div class="prediction-caption">Water quality</div>
+        <div id="predictionValue" class="prediction">--</div>
+      </div>
+      <div class="confidence">
+        <div class="prediction-caption">Confidence</div>
+        <div id="confidence" class="confidence-number">--%</div>
+      </div>
+    </div>
+    <div class="risk-section">
+      <div class="risk-heading"><span>Risk score</span><strong id="riskScore">--%</strong></div>
+      <div class="risk-track"><div id="riskProgress" class="risk-progress" style="width:0%;"></div></div>
+      <div id="riskLevel" class="risk-level" style="color:#6f8fa3;">waiting</div>
+    </div>
+  </div>
+
+  <!-- explainable AI -->
+  <div class="card">
+    <div class="card-header">
+      <div><h2><i class="fas fa-lightbulb"></i> Explainable AI</h2>
+        <div style="color:#5f7d92; font-size:13px; margin-top:4px;">SHAP factor contributions</div>
+      </div>
+      <span style="background:#dcecf9; color:#135a78; padding:5px 16px; border-radius:40px; font-size:11px; font-weight:700;">SHAP</span>
+    </div>
+    <div class="explain-box">
+      <div class="explain-intro">How each parameter influences the GOOD / BAD prediction.</div>
+      <div class="explain-features">
+        <div class="explain-feature"><div class="feature-name">pH</div><div id="phImpact" class="feature-status">waiting</div></div>
+        <div class="explain-feature"><div class="feature-name">Turbidity</div><div id="turbidityImpact" class="feature-status">waiting</div></div>
+        <div class="explain-feature"><div class="feature-name">TDS</div><div id="tdsImpact" class="feature-status">waiting</div></div>
+        <div class="explain-feature"><div class="feature-name">Temperature</div><div id="temperatureImpact" class="feature-status">waiting</div></div>
+      </div>
+      <div class="shap-note"><strong>SHAP insight:</strong> <span id="shapNoteText">model explanation will appear here</span></div>
+    </div>
+  </div>
+
+  <!-- possible solution -->
+  <div class="card solution-card">
+    <div class="card-header">
+      <div>
+        <h2><i class="fas fa-hand-holding-medical"></i> Possible Solution</h2>
+        <div style="color:#5f7d92; font-size:13px; margin-top:4px;">Parameter-specific corrective guidance from the current reading</div>
+      </div>
+      <span style="background:#e3f0fa; color:#165779; padding:5px 16px; border-radius:40px; font-size:11px; font-weight:700;">GUIDANCE</span>
+    </div>
+
+    <div id="solutionSummary" class="solution-summary">
+      Start monitoring to generate parameter-specific guidance.
+    </div>
+
+    <div id="solutionPriority" class="solution-priority"></div>
+
+    <div id="solutionList" class="solution-list">
+      <div class="solution-empty">Waiting for current sensor values.</div>
+    </div>
+
+    <div class="solution-disclaimer">
+      <strong>Prototype note:</strong> These recommendations are rule-based guidance derived from the four measured parameters. They do not replace laboratory testing or establish complete drinking-water potability.
+    </div>
+  </div>
+
+  <!-- records -->
+  <div class="card records-card">
+    <div class="card-header">
+      <h2><i class="fas fa-clock"></i> Latest 5 records</h2>
+      <span id="recordCount" class="record-count">0 records</span>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>ID</th><th>Timestamp</th><th>pH</th><th>Turb.</th><th>TDS</th><th>Temp</th><th>Pred.</th><th>Conf.</th><th>Risk</th><th>Level</th></tr></thead>
+        <tbody id="recordsBody"><tr><td colspan="10" class="empty">start monitoring to collect data</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- about -->
+  <div class="about-card">
+    <h2><i class="fas fa-rocket" style="margin-right:12px;"></i>About AquaAI</h2>
+    <p>AI-driven IoT water quality monitoring with federated CNN classification. Collects pH, turbidity, TDS and temperature from sensor API, predicts GOOD/BAD, provides confidence and SHAP-based explanations.</p>
+    <p style="margin-top:12px;">All records stored in SQLite. Real‑time dashboard with risk assessment (Low, Moderate, High, Critical).</p>
+    <div class="about-grid">
+      <div class="about-item"><strong>IoT sensors</strong><span>pH · turbidity · TDS · temp</span></div>
+      <div class="about-item"><strong>AI model</strong><span>Federated 1DCNN Edge-AI Deployment</span></div>
+      <div class="about-item"><strong>Explainability</strong><span>SHAP values</span></div>
+      <div class="about-item"><strong>Prediction</strong><span>GOOD / BAD</span></div>
+      <div class="about-item"><strong>Risk levels</strong><span>Low · Moderate · High · Critical</span></div>
+      <div class="about-item"><strong>Storage</strong><span>SQLite history</span></div>
+    </div>
+  </div>
+  <div class="footer">AI · IoT · smart water intelligence</div>
+</main>
+
+<script>
+  let monitoring = false;
+  let timer = null;
+
+  async function startMonitoring() {
+    try {
+      const res = await fetch('/start', { method: 'POST' });
+      const data = await res.json();
+      if (!data.success) { showError('could not start'); return; }
+      monitoring = true;
+      updateStatus();
+      document.getElementById('startButton').disabled = true;
+      document.getElementById('stopButton').disabled = false;
+      await collectLatest();
+      timer = setInterval(collectLatest, 3000);
+    } catch (e) { showError('server connection error'); }
+  }
+
+  async function stopMonitoring() {
+    try {
+      await fetch('/stop', { method: 'POST' });
+      monitoring = false;
+      if (timer) { clearInterval(timer); timer = null; }
+      updateStatus();
+      document.getElementById('startButton').disabled = false;
+      document.getElementById('stopButton').disabled = true;
+    } catch (e) { showError('could not stop'); }
+  }
+
+  async function collectLatest() {
+    if (!monitoring) return;
+    try {
+      const res = await fetch('/collect', { cache: 'no-store' });
+      const data = await res.json();
+      if (!data.success) { showError(data.error || 'collect error'); return; }
+      updateSensorCards(data.record);
+      updatePrediction(data.record);
+      updateSHAP(data.explanation);
+      updatePossibleSolution(data.record, data.explanation);
+      updateLatestFive(data.latest_five);
+      updateDatabaseCount(data.database_count);
+      hideError();
+    } catch (e) { showError('flask unavailable'); }
+  }
+
+  function updateSensorCards(r) {
+    document.getElementById('ph').innerText = Number(r.ph).toFixed(2);
+    document.getElementById('turbidity').innerText = Number(r.turbidity).toFixed(2);
+    document.getElementById('tds').innerText = Number(r.tds).toFixed(2);
+    document.getElementById('temperature').innerText = Number(r.temperature).toFixed(2);
+    const t = r.api_timestamp || r.stored_timestamp || 'now';
+    document.getElementById('phTime').innerText = 'updated ' + t;
+    document.getElementById('turbidityTime').innerText = 'updated ' + t;
+    document.getElementById('tdsTime').innerText = 'updated ' + t;
+    document.getElementById('temperatureTime').innerText = 'updated ' + t;
+  }
+
+  function updatePrediction(r) {
+    const el = document.getElementById('predictionValue');
+    el.innerText = r.prediction;
+    el.className = 'prediction ' + (r.prediction === 'GOOD' ? 'good' : 'bad');
+    document.getElementById('confidence').innerText = Number(r.confidence).toFixed(2) + '%';
+    const score = Number(r.risk_score);
+    document.getElementById('riskScore').innerText = score.toFixed(2) + '%';
+    document.getElementById('riskProgress').style.width = Math.min(score,100) + '%';
+    const lvl = document.getElementById('riskLevel');
+    lvl.innerText = r.risk_level + ' RISK';
+    const colors = { LOW: '#0fb37e', MODERATE: '#f5b342', HIGH: '#e5544a', CRITICAL: '#c0392b' };
+    lvl.style.color = colors[r.risk_level] || '#38556a';
+  }
+
+  function updateSHAP(exp) {
+    if (!exp || !exp.available) {
+      const msg = exp && exp.message ? exp.message : 'SHAP unavailable';
+      ['phImpact','turbidityImpact','tdsImpact','temperatureImpact'].forEach(id => document.getElementById(id).innerText = msg);
+      document.getElementById('shapNoteText').innerText = msg;
+      return;
+    }
+    const map = {};
+    if (Array.isArray(exp.features)) exp.features.forEach(f => map[f.feature] = f);
+    const fmt = (f) => {
+      if (!f) return '—';
+      const val = Number(f.shap_value);
+      const sign = val >= 0 ? '+' : '';
+      const dir = f.direction || (val >= 0 ? '↑ BAD' : '↓ GOOD');
+      return sign + val.toFixed(5) + ' ' + dir;
+    };
+    document.getElementById('phImpact').innerText = fmt(map['pH']);
+    document.getElementById('turbidityImpact').innerText = fmt(map['Turbidity']);
+    document.getElementById('tdsImpact').innerText = fmt(map['TDS']);
+    document.getElementById('temperatureImpact').innerText = fmt(map['Temperature']);
+    document.getElementById('shapNoteText').innerText = exp.explanation || exp.message || 'SHAP explanation loaded.';
+  }
+
+  function updatePossibleSolution(r, exp) {
+    const summary = document.getElementById('solutionSummary');
+    const priority = document.getElementById('solutionPriority');
+    const list = document.getElementById('solutionList');
+
+    if (!summary || !priority || !list) return;
+
+    const ph = Number(r.ph);
+    const turbidity = Number(r.turbidity);
+    const tds = Number(r.tds);
+    const temperature = Number(r.temperature);
+    const risk = Number(r.risk_score);
+    const prediction = String(r.prediction || '').toUpperCase();
+
+    const issues = [];
+
+    // These thresholds match the prototype's existing backend override rules:
+    // pH < 6 or > 9, turbidity > 10 NTU, TDS > 1000 ppm, temperature > 40 C.
+    if (Number.isFinite(turbidity) && turbidity > 10) {
+      issues.push({
+        parameter: 'Turbidity',
+        status: 'HIGH ATTENTION',
+        level: 'high',
+        problem: `Turbidity is ${turbidity.toFixed(2)} NTU, above the prototype severe-turbidity boundary of 10 NTU.`,
+        solution: 'Inspect the water source and filtration/sediment-removal stage. Treat the sample with an appropriate filtration process, then measure turbidity again.'
+      });
+    } else if (Number.isFinite(turbidity) && turbidity > 5) {
+      issues.push({
+        parameter: 'Turbidity',
+        status: 'ATTENTION',
+        level: 'attention',
+        problem: `Turbidity is ${turbidity.toFixed(2)} NTU and should be monitored.`,
+        solution: 'Check for suspended particles and inspect the filtration stage. Re-measure after the water has settled or been filtered.'
+      });
+    }
+
+    if (Number.isFinite(ph) && (ph < 6 || ph > 9)) {
+      issues.push({
+        parameter: 'pH',
+        status: 'HIGH ATTENTION',
+        level: 'high',
+        problem: `pH is ${ph.toFixed(2)}, outside the prototype operating boundary of 6.0–9.0.`,
+        solution: 'Investigate the water source and possible acidic or alkaline contamination. Do not use chemical correction without identifying the cause; re-test pH after appropriate treatment.'
+      });
+    } else if (Number.isFinite(ph) && (ph < 6.5 || ph > 8.5)) {
+      issues.push({
+        parameter: 'pH',
+        status: 'ATTENTION',
+        level: 'attention',
+        problem: `pH is ${ph.toFixed(2)}, outside the preferred prototype range of 6.5–8.5.`,
+        solution: 'Monitor the trend and investigate the water source if the reading remains outside the preferred range.'
+      });
+    }
+
+    if (Number.isFinite(tds) && tds > 1000) {
+      issues.push({
+        parameter: 'TDS',
+        status: 'HIGH ATTENTION',
+        level: 'high',
+        problem: `TDS is ${tds.toFixed(2)} ppm, above the prototype hard-violation threshold of 1000 ppm.`,
+        solution: 'Investigate the source of dissolved solids and confirm the measurement with a calibrated reference. Select treatment based on the composition of the dissolved material rather than TDS alone.'
+      });
+    } else if (Number.isFinite(tds) && tds > 600) {
+      issues.push({
+        parameter: 'TDS',
+        status: 'ATTENTION',
+        level: 'attention',
+        problem: `TDS is ${tds.toFixed(2)} ppm and should be monitored for increasing dissolved-solids content.`,
+        solution: 'Check the water source and monitor the TDS trend. If it continues to rise, identify the dissolved constituents before selecting treatment.'
+      });
+    }
+
+    if (Number.isFinite(temperature) && temperature > 40) {
+      issues.push({
+        parameter: 'Temperature',
+        status: 'HIGH ATTENTION',
+        level: 'high',
+        problem: `Temperature is ${temperature.toFixed(2)} °C, above the prototype 40 °C override boundary.`,
+        solution: 'Check the measurement environment and sensor placement, allow the sample to reach a representative temperature, and re-measure before interpreting the other parameters.'
+      });
+    } else if (Number.isFinite(temperature) && temperature > 35) {
+      issues.push({
+        parameter: 'Temperature',
+        status: 'ATTENTION',
+        level: 'attention',
+        problem: `Temperature is ${temperature.toFixed(2)} °C and is relatively high for this prototype operating range.`,
+        solution: 'Monitor temperature and verify the reading if the sample is not expected to be warm.'
+      });
+    }
+
+    const shapFeatures = exp && Array.isArray(exp.features) ? exp.features : [];
+    const shapSorted = shapFeatures
+      .map(f => ({
+        feature: f.feature,
+        value: Number(f.shap_value)
+      }))
+      .filter(f => Number.isFinite(f.value))
+      .sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+
+    if (shapSorted.length > 0) {
+      const top = shapSorted[0];
+      const direction = top.value >= 0 ? 'toward BAD' : 'toward GOOD';
+      priority.innerHTML = `<strong>🧠 AI explanation:</strong> ${escapeHtml(top.feature)} has the largest absolute SHAP influence for this sample (${Math.abs(top.value).toFixed(5)}) and pushes the model ${direction}.`;
+      priority.style.display = 'block';
+    } else {
+      priority.innerHTML = '';
+      priority.style.display = 'none';
+    }
+
+    if (issues.length > 0) {
+      summary.className = 'solution-summary bad-summary';
+      summary.innerHTML = `<strong>Corrective action needed:</strong> ${issues.length} measured parameter${issues.length === 1 ? '' : 's'} requires attention. The highest-priority issue should be investigated first, then the water should be re-measured.`;
+    } else if (prediction === 'GOOD') {
+      summary.className = 'solution-summary good-summary';
+      summary.innerHTML = `<strong>No rule-based corrective action is currently triggered.</strong> The measured parameters are within the prototype's configured boundaries. Continue monitoring trends and investigate any persistent change.`;
+    } else {
+      summary.className = 'solution-summary';
+      summary.innerHTML = `<strong>AI classification is ${escapeHtml(prediction || 'UNAVAILABLE')}.</strong> The model result should be interpreted together with the measured parameters and SHAP explanation; no single treatment should be inferred from the AI label alone.`;
+    }
+
+    // Show the current parameter status even when no hard rule is triggered.
+    const cards = [];
+
+    if (issues.length === 0) {
+      const normal = [
+        ['pH', ph, 'pH', 6.5, 8.5],
+        ['Turbidity', turbidity, 'NTU', 0, 5],
+        ['TDS', tds, 'ppm', 0, 600],
+        ['Temperature', temperature, '°C', 0, 35]
+      ];
+
+      normal.forEach(item => {
+        const [name, value, unit] = item;
+        if (!Number.isFinite(value)) return;
+        cards.push({
+          parameter: name,
+          status: 'NO MAJOR ACTION',
+          level: 'normal',
+          problem: `${name} is currently ${value.toFixed(2)} ${unit}. No corrective rule is triggered by this prototype.`,
+          solution: 'Continue monitoring and compare future readings with the current baseline.'
+        });
+      });
+    } else {
+      // Add non-problematic parameters as monitoring cards so the section
+      // explains all four measured variables, not only the failing one.
+      const names = new Set(issues.map(i => i.parameter));
+      const normal = [
+        ['pH', ph, 'pH'],
+        ['Turbidity', turbidity, 'NTU'],
+        ['TDS', tds, 'ppm'],
+        ['Temperature', temperature, '°C']
+      ];
+
+      normal.forEach(([name, value, unit]) => {
+        if (!Number.isFinite(value) || names.has(name)) return;
+        cards.push({
+          parameter: name,
+          status: 'MONITOR',
+          level: 'normal',
+          problem: `${name} is currently ${value.toFixed(2)} ${unit} and did not trigger a corrective rule.`,
+          solution: 'Continue monitoring this parameter while the flagged condition is investigated.'
+        });
+      });
+    }
+
+    const allCards = [...issues, ...cards];
+
+    list.innerHTML = allCards.map(item => `
+      <div class="solution-item ${item.level}">
+        <div class="solution-item-head">
+          <div class="solution-parameter">${escapeHtml(item.parameter)}</div>
+          <span class="solution-status ${item.level}">${escapeHtml(item.status)}</span>
+        </div>
+        <div class="solution-label">Current condition</div>
+        <div class="solution-text">${escapeHtml(item.problem)}</div>
+        <div class="solution-label">Recommended action</div>
+        <div class="solution-text">${escapeHtml(item.solution)}</div>
+      </div>
+    `).join('');
+  }
+
+  function escapeHtml(value) {
+    const div = document.createElement('div');
+    div.textContent = value == null ? '' : String(value);
+    return div.innerHTML;
+  }
+
+  function updateLatestFive(records) {
+    const body = document.getElementById('recordsBody');
+    if (!records || records.length === 0) {
+      body.innerHTML = '<tr><td colspan="10" class="empty">no records</td></tr>';
+      return;
+    }
+    body.innerHTML = '';
+    records.forEach(r => {
+      const tr = document.createElement('tr');
+      const badge = r.prediction === 'GOOD' ? 'result-badge result-good' : 'result-badge result-bad';
+      const color = { LOW: '#0fb37e', MODERATE: '#f5b342', HIGH: '#e5544a', CRITICAL: '#c0392b' }[r.risk_level] || '#38556a';
+      tr.innerHTML = `
+        <td>${r.db_id}</td>
+        <td>${r.stored_timestamp}</td>
+        <td>${Number(r.ph).toFixed(2)}</td>
+        <td>${Number(r.turbidity).toFixed(2)}</td>
+        <td>${Number(r.tds).toFixed(2)}</td>
+        <td>${Number(r.temperature).toFixed(2)} °C</td>
+        <td><span class="${badge}">${r.prediction}</span></td>
+        <td>${Number(r.confidence).toFixed(2)}%</td>
+        <td>${Number(r.risk_score).toFixed(2)}%</td>
+        <td class="risk-badge" style="color:${color}">${r.risk_level}</td>
+      `;
+      body.appendChild(tr);
+    });
+  }
+
+  function updateDatabaseCount(c) { document.getElementById('recordCount').innerText = c + ' records'; }
+
+  function updateStatus() {
+    const st = document.getElementById('systemStatus');
+    if (monitoring) { st.innerHTML = '<i class="fas fa-circle" style="font-size:10px;color:#0fb37e;margin-right:8px;"></i> SYSTEM RUNNING'; st.className = 'system-status running'; }
+    else { st.innerHTML = '<i class="fas fa-circle" style="font-size:10px;color:#8aa3b6;margin-right:8px;"></i> SYSTEM STOPPED'; st.className = 'system-status'; }
+  }
+
+  async function clearDatabase() {
+    if (!confirm('delete all records?')) return;
+    try {
+      const res = await fetch('/clear_database', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('recordsBody').innerHTML = '<tr><td colspan="10" class="empty">database cleared</td></tr>';
+        updateDatabaseCount(0);
+        document.getElementById('solutionSummary').className = 'solution-summary';
+        document.getElementById('solutionSummary').innerHTML = 'Database cleared. Start monitoring to generate new parameter-specific guidance.';
+        document.getElementById('solutionPriority').style.display = 'none';
+        document.getElementById('solutionList').innerHTML = '<div class="solution-empty">Waiting for current sensor values.</div>';
+      }
+    } catch (e) { showError('clear failed'); }
+  }
+
+  function showError(msg) {
+    const box = document.getElementById('errorBox');
+    box.innerText = msg;
+    box.style.display = 'block';
+  }
+  function hideError() { document.getElementById('errorBox').style.display = 'none'; }
+</script>
+</body>
+</html>

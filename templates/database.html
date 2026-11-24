@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AquaAI - Database</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background: #f4f8fb;
+            color: #17212b;
+            min-height: 100vh;
+        }
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+
+            background: linear-gradient(
+                180deg,
+                #092b4c 0%,
+                #07375f 100%
+            );
+
+            padding: 28px 18px;
+
+            color: white;
+
+            box-shadow: 8px 0 30px rgba(0, 0, 0, 0.08);
+
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+
+            padding: 8px 10px 28px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255,255,255,0.13);
+
+            font-size: 25px;
+
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,0.08);
+        }
+
+        .brand h2 {
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+        }
+
+        .brand span {
+            display: block;
+
+            margin-top: 4px;
+
+            color: #b9d2e8;
+
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .menu-title {
+            padding: 15px 12px 10px;
+
+            color: #8eabc4;
+
+            text-transform: uppercase;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            letter-spacing: 1.3px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+
+            margin: 5px 0;
+            padding: 14px 15px;
+
+            border-radius: 12px;
+
+            color: #c8d9e8;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: 0.25s ease;
+        }
+
+        .nav:hover {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .nav.active {
+            background: rgba(255,255,255,0.13);
+
+            color: white;
+
+            box-shadow:
+                inset 3px 0 0 #55c7ff;
+        }
+
+
+        /* =====================================================
+           MAIN CONTENT
+        ===================================================== */
+
+        .main {
+            margin-left: 250px;
+
+            min-height: 100vh;
+
+            padding: 34px 38px 50px;
+        }
+
+
+        /* =====================================================
+           PAGE HEADER
+        ===================================================== */
+
+        .page-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 28px;
+        }
+
+        .page-title h1 {
+            font-size: 30px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.8px;
+
+            color: #102a43;
+        }
+
+        .page-title p {
+            margin-top: 7px;
+
+            color: #708399;
+
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .header-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 10px 15px;
+
+            background: white;
+
+            border: 1px solid #e1eaf1;
+
+            border-radius: 12px;
+
+            color: #527086;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            box-shadow: 0 5px 20px rgba(31, 60, 80, 0.05);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #20b26b;
+
+            box-shadow:
+                0 0 0 4px rgba(32,178,107,0.12);
+        }
+
+
+        /* =====================================================
+           SUMMARY CARDS
+        ===================================================== */
+
+        .summary-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            position: relative;
+
+            background: white;
+
+            border: 1px solid #e2eaf0;
+
+            border-radius: 17px;
+
+            padding: 21px;
+
+            min-height: 125px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 7px 25px rgba(31, 60, 80, 0.06);
+        }
+
+        .summary-card::after {
+            content: "";
+
+            position: absolute;
+
+            width: 90px;
+            height: 90px;
+
+            right: -35px;
+            bottom: -40px;
+
+            border-radius: 50%;
+
+            background: #edf8ff;
+        }
+
+        .summary-label {
+            position: relative;
+            z-index: 2;
+
+            color: #8192a3;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            font-weight: 700;
+        }
+
+        .summary-number {
+            position: relative;
+            z-index: 2;
+
+            margin-top: 12px;
+
+            font-size: 30px;
+
+            color: #123b5d;
+
+            font-weight: 800;
+        }
+
+        .summary-small {
+            position: relative;
+            z-index: 2;
+
+            margin-top: 5px;
+
+            color: #8a9aaa;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           DATABASE CARD
+        ===================================================== */
+
+        .database-card {
+            background: white;
+
+            border: 1px solid #e1e9ef;
+
+            border-radius: 19px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 30px rgba(31, 60, 80, 0.06);
+        }
+
+        .database-header {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 22px 24px;
+
+            border-bottom: 1px solid #e8eef3;
+        }
+
+        .database-header h2 {
+            font-size: 18px;
+
+            color: #183b56;
+
+            font-weight: 800;
+        }
+
+        .database-header p {
+            margin-top: 5px;
+
+            color: #8292a1;
+
+            font-size: 12px;
+        }
+
+        .record-count {
+            padding: 8px 13px;
+
+            background: #edf8ff;
+
+            border: 1px solid #d7eefc;
+
+            border-radius: 10px;
+
+            color: #1478b4;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table-wrapper {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1150px;
+        }
+
+        thead {
+            background: #f7fafc;
+        }
+
+        th {
+            padding: 14px 15px;
+
+            text-align: left;
+
+            color: #74879a;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.8px;
+
+            font-weight: 800;
+
+            border-bottom: 1px solid #e4ebf0;
+
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 16px 15px;
+
+            color: #405465;
+
+            font-size: 12px;
+
+            font-weight: 500;
+
+            border-bottom: 1px solid #edf1f4;
+
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            transition: 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fcff;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .record-id {
+            color: #177eb9;
+
+            font-weight: 800;
+        }
+
+        .sensor-id {
+            color: #526b7e;
+
+            font-weight: 700;
+        }
+
+        .value {
+            color: #193b54;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           PREDICTION BADGES
+        ===================================================== */
+
+        .prediction {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-width: 65px;
+
+            padding: 7px 11px;
+
+            border-radius: 8px;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.4px;
+        }
+
+        .prediction.good {
+            background: #e9f9f1;
+
+            color: #15834f;
+
+            border: 1px solid #ccefdc;
+        }
+
+        .prediction.bad {
+            background: #fff0f0;
+
+            color: #d33b45;
+
+            border: 1px solid #ffd4d6;
+        }
+
+
+        /* =====================================================
+           RISK BADGES
+        ===================================================== */
+
+        .risk {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-width: 82px;
+
+            padding: 7px 10px;
+
+            border-radius: 8px;
+
+            font-size: 10px;
+
+            font-weight: 800;
+        }
+
+        .risk.low {
+            background: #eaf9f1;
+
+            color: #16804f;
+        }
+
+        .risk.moderate {
+            background: #fff8e5;
+
+            color: #a97800;
+        }
+
+        .risk.high {
+            background: #fff0e7;
+
+            color: #d15c20;
+        }
+
+        .risk.critical {
+            background: #ffe9eb;
+
+            color: #c52d39;
+        }
+
+
+        /* =====================================================
+           CONFIDENCE
+        ===================================================== */
+
+        .confidence {
+            font-weight: 800;
+
+            color: #245c7c;
+        }
+
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty-state {
+            padding: 70px 30px;
+
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 65px;
+            height: 65px;
+
+            margin: 0 auto 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 18px;
+
+            background: #eef7fc;
+
+            font-size: 28px;
+        }
+
+        .empty-state h3 {
+            color: #23445d;
+
+            font-size: 18px;
+
+            font-weight: 800;
+        }
+
+        .empty-state p {
+            margin-top: 7px;
+
+            color: #8596a5;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer-info {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 17px 24px;
+
+            border-top: 1px solid #e8eef3;
+
+            color: #8b9aa8;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .summary-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 760px) {
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+
+                min-height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+
+                padding: 25px 18px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+
+                gap: 15px;
+
+                flex-direction: column;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            💧
+        </div>
+
+        <div>
+
+            <h2>AquaAI</h2>
+
+            <span>
+                Smart Water Intelligence
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="menu-title">
+        Main
+    </div>
+
+
+    <a href="/" class="nav">
+        Dashboard
+    </a>
+
+
+    <a href="/database" class="nav active">
+        Database
+    </a>
+
+</aside>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="main">
+
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <div class="page-title">
+
+            <h1>Sensor Database</h1>
+
+            <p>
+                Historical water-quality monitoring records
+            </p>
+
+        </div>
+
+
+        <div class="header-status">
+
+            <span class="status-dot"></span>
+
+            Database Connected
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         SUMMARY
+    ===================================================== -->
+
+    <div class="summary-grid">
+
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                Total Records
+            </div>
+
+            <div class="summary-number">
+                {{ database_count }}
+            </div>
+
+            <div class="summary-small">
+                Stored sensor readings
+            </div>
+
+        </div>
+
+
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                Database
+            </div>
+
+            <div class="summary-number">
+                SQLite
+            </div>
+
+            <div class="summary-small">
+                Local persistent storage
+            </div>
+
+        </div>
+
+
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                AI Model
+            </div>
+
+            <div class="summary-number">
+                1DCNN-tflite Model
+            </div>
+
+            <div class="summary-small">
+                 Global Federated learning 
+            </div>
+
+        </div>
+
+
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                Explainability
+            </div>
+
+            <div class="summary-number">
+                SHAP
+            </div>
+
+            <div class="summary-small">
+                Sensor contribution analysis
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         DATABASE TABLE
+    ===================================================== -->
+
+    <section class="database-card">
+
+
+        <div class="database-header">
+
+            <div>
+
+                <h2>
+                    Water Quality Records
+                </h2>
+
+                <p>
+                    Sensor readings, AI predictions and risk analysis
+                </p>
+
+            </div>
+
+
+            <div class="record-count">
+
+                {{ database_count }}
+                Records
+
+            </div>
+
+        </div>
+
+
+
+        {% if records %}
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Sensor ID
+                        </th>
+
+                        <th>
+                            pH
+                        </th>
+
+                        <th>
+                            Turbidity
+                        </th>
+
+                        <th>
+                            TDS
+                        </th>
+
+                        <th>
+                            Temperature
+                        </th>
+
+                        <th>
+                            Prediction
+                        </th>
+
+                        <th>
+                            Confidence
+                        </th>
+
+                        <th>
+                            Risk Score
+                        </th>
+
+                        <th>
+                            Risk Level
+                        </th>
+
+                        <th>
+                            API Time
+                        </th>
+
+
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for record in records %}
+
+                    <tr>
+
+
+                        <!-- ID -->
+
+                        <td>
+
+                            <span class="record-id">
+                                #{{ record.db_id }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- SENSOR ID -->
+
+                        <td>
+
+                            <span class="sensor-id">
+                                {{ record.sensor_id }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- PH -->
+
+                        <td>
+
+                            <span class="value">
+                                {{ "%.2f"|format(record.ph|float) }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- TURBIDITY -->
+
+                        <td>
+
+                            <span class="value">
+                                {{ "%.2f"|format(record.turbidity|float) }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- TDS -->
+
+                        <td>
+
+                            <span class="value">
+                                {{ "%.2f"|format(record.tds|float) }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- TEMPERATURE -->
+
+                        <td>
+
+                            <span class="value">
+                                {{ "%.2f"|format(record.temperature|float) }}
+                            </span>
+
+                            °C
+
+                        </td>
+
+
+                        <!-- PREDICTION -->
+
+                        <td>
+
+                            {% if record.prediction == "GOOD" %}
+
+                                <span class="prediction good">
+                                    GOOD
+                                </span>
+
+                            {% else %}
+
+                                <span class="prediction bad">
+                                    BAD
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- CONFIDENCE -->
+
+                        <td>
+
+                            <span class="confidence">
+
+                                {{ "%.2f"|format(record.confidence|float) }}%
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- RISK SCORE -->
+
+                        <td>
+
+                            <span class="value">
+
+                                {{ "%.2f"|format(record.risk_score|float) }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- RISK LEVEL -->
+
+                        <td>
+
+                            {% set risk =
+                                record.risk_level|string|lower
+                            %}
+
+
+                            {% if risk == "low" %}
+
+                                <span class="risk low">
+                                    LOW
+                                </span>
+
+                            {% elif risk == "moderate" %}
+
+                                <span class="risk moderate">
+                                    MODERATE
+                                </span>
+
+                            {% elif risk == "high" %}
+
+                                <span class="risk high">
+                                    HIGH
+                                </span>
+
+                            {% else %}
+
+                                <span class="risk critical">
+                                    CRITICAL
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- API TIMESTAMP -->
+
+                        <td>
+
+                            {{ record.api_timestamp }}
+
+                        </td>
+
+
+                        <!-- STORED TIMESTAMP -->
+
+                        <td>
+
+                            {{ record.stored_at }}
+
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="footer-info">
+
+            <span>
+                Showing {{ database_count }} stored record(s)
+            </span>
+
+            <span>
+                AquaAI Smart Water Intelligence
+            </span>
+
+        </div>
+
+
+        {% else %}
+
+
+        <!-- EMPTY DATABASE -->
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                💧
+            </div>
+
+            <h3>
+                No Sensor Records Yet
+            </h3>
+
+            <p>
+                Start monitoring from the Dashboard to store
+                sensor readings in the database.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+</main>
+
+
+</body>
+</html>
